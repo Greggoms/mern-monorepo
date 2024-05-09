@@ -5,7 +5,6 @@ import { Menu } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   NavigationMenu,
@@ -28,33 +27,15 @@ export default function Header() {
             <h2 className="font-semibold text-2xl">MERN</h2>
           </Link>
           {/* Desktop Nav */}
-          <NavigationMenu className="hidden md:block">
+          <NavigationMenu className="hidden sm:block">
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
-                  active={pathname === "/blog"}
+                  active={pathname === "/cart"}
                   asChild
                 >
-                  <Link to="/blog">Blog</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  className={navigationMenuTriggerStyle()}
-                  active={pathname === "/about"}
-                  asChild
-                >
-                  <Link to="/about">About</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink
-                  className={navigationMenuTriggerStyle()}
-                  active={pathname === "/contact"}
-                  asChild
-                >
-                  <Link to="/contact">Contact</Link>
+                  <Link to="/cart">Cart</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -71,7 +52,7 @@ export default function Header() {
               isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true)
             }
           >
-            <SheetTrigger className="md:hidden" asChild>
+            <SheetTrigger className="sm:hidden" asChild>
               <Button variant="outline" size="icon">
                 <Menu className="h-4 w-4" />
               </Button>
@@ -83,35 +64,11 @@ export default function Header() {
                   variant="link"
                   className={cn(
                     "justify-stretch text-left",
-                    pathname === "/blog" && "underline"
+                    pathname === "/cart" && "underline"
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <Link to="/blog">Blog</Link>
-                </Button>
-                <Separator />
-                <Button
-                  asChild
-                  variant="link"
-                  className={cn(
-                    "justify-stretch text-left",
-                    pathname === "/about" && "underline"
-                  )}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Link to="/about">About</Link>
-                </Button>
-                <Separator />
-                <Button
-                  asChild
-                  variant="link"
-                  className={cn(
-                    "justify-stretch text-left",
-                    pathname === "/contact" && "underline"
-                  )}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Link to="/contact">Contact</Link>
+                  <Link to="/cart">Cart</Link>
                 </Button>
               </nav>
             </SheetContent>

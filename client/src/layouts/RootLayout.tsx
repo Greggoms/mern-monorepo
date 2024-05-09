@@ -1,6 +1,7 @@
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 import Header from "@/components/Header";
+import { Toaster } from "@/components/ui/sonner";
 
 function RootLayout() {
   return (
@@ -12,6 +13,7 @@ function RootLayout() {
         <Header />
 
         <Outlet />
+        <Toaster richColors />
       </div>
 
       <ScrollRestoration />
