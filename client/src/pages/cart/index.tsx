@@ -13,6 +13,7 @@ export default function CartPage() {
 
   useEffect(() => {
     const fetchResult = {
+      id: "|>u12(H45!d",
       promo: "some-random-id",
       products: [
         {
