@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { renderToBuffer } from "@react-pdf/renderer";
 
 import { MessageWithFileResponse } from "../interfaces/MessageResponse";
-import { PurchaseDetails } from "../interfaces/files/PurchaseDetails";
+import { PurchaseDetails } from "../interfaces/PurchaseDetails";
 import generatePurchaseInvoice from "../utils/files/generatePurchaseInvoice";
 
 export const createPurchaseInvoice = async (

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { productSchema } from "../db/Product";
+import { productSchema } from "./db/Product";
 
 export const purchaseDetailsSchema = z.object({
   id: z.string(),

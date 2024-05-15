@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-import { PurchaseDetails } from "../../interfaces/files/PurchaseDetails";
+import { PurchaseDetails } from "../../interfaces/PurchaseDetails";
 import { Product } from "../../interfaces/db/Product";
 
 // Create styles

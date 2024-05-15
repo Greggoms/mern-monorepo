@@ -1,92 +1,82 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 
+import { generatePurchaseInvoice, getPurchase } from "@/api/endpoints";
+import getErrorMessage from "@/lib/utils/error-handlers";
+
 import { Button } from "@/components/ui/button";
-import { Cart } from "@/interfaces/Cart";
+
+// There are 3 hardcoded purchases. This chooses a random one per query call.
+const purchaseId = `purchase-${Math.floor(Math.random() * 3 + 1)}-id`;
 
 export default function CartPage() {
-  const [invoice, setInvoice] = useState<string | Buffer | null>(null);
-  const [cart, setCart] = useState<Cart | null>();
+  // The generated PDF as a base64 string.
+  const [invoice, setInvoice] = useState<string>();
 
-  useEffect(() => {
-    const fetchResult = {
-      id: "|>u12(H45!d",
-      promo: "some-random-id",
-      products: [
-        {
-          id: "r4nD0mid",
-          name: "Item One",
-          description: "",
-          price: 0.55,
-        },
-        {
-          id: "239018kedm32",
-          name: "Item Two",
-          description: "",
-          price: 5.45,
-        },
-        {
-          id: "g6985tr1hrt",
-          name: "Item Three",
-          description: "",
-          price: 2,
-        },
-      ],
-    };
-    setCart(fetchResult);
-  }, []);
+  // Fetch purchase details.
+  const query = useQuery({
+    queryKey: ["purchases", purchaseId],
+    queryFn: () => getPurchase(purchaseId),
+  });
 
   /** This only handles displaying the PDF for now... */
   const handleDownloadInvoice = async () => {
-    if (!cart) return toast.info("No cart...");
+    if (!query.data) return toast.info("No purchase information...");
 
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/files/purchase-invoice",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(cart),
-        }
-      );
-      const body = await res.json();
-      console.log(body);
+      const res = await generatePurchaseInvoice(query.data);
 
-      if (!res.ok) {
-        console.error(body);
-        toast.error(body.message);
-        return;
-      }
-
-      setInvoice(body.file); // receiving a base64 string
-      // setInvoice(body.file.data); // if receiving a Buffer
-      toast.success(body.message);
+      setInvoice(res.file as string); // receiving a base64 string
+      // setInvoice(res.file.data as Buffer); // if receiving a Buffer
+      toast.success(res.message);
     } catch (error) {
       console.error(error);
     }
   };
 
+  if (query.isLoading) {
+    return (
+      <main className="container pt-5 pb-20">
+        <em className="text-muted-foreground">Fetching purchase...</em>
+      </main>
+    );
+  }
+  if (query.isError || !query.data) {
+    return (
+      <main className="container pt-5 pb-20 space-y-5">
+        <p>Something went wrong...</p>
+        <p className="text-destructive">{getErrorMessage(query.error)}</p>
+      </main>
+    );
+  }
+
   return (
     <main className="container pt-5 pb-20 space-y-10">
       <h1>Thank you for your purchase</h1>
 
-      <ul>
-        <li>Product 1</li>
-        <li>Product 2</li>
-        <li>Product 3</li>
-      </ul>
+      {query.data.products.length === 0 ? (
+        <em className="text-muted-foreground">N/A</em>
+      ) : (
+        <ul>
+          {query.data.products.map((p) => (
+            <li key={p.id}>
+              <h3>{p.name}</h3>
+              <p>{p.price}</p>
+              <p>{p.description}</p>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Button
         variant="outline"
         size="sm"
         onClick={handleDownloadInvoice}
-        disabled={!cart}
+        disabled={query.isLoading || query.isError}
       >
         <Download className="mr-2" />
         Download Invoice
